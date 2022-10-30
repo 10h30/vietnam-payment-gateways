@@ -27,7 +27,24 @@ add_action( 'plugins_loaded', 'vnpg_init_gateway_class' );
 function vnpg_init_gateway_class() {
 	class WC_VNPG_YCB extends WC_Payment_Gateway {
  		public function __construct() {
+            $this->id                 = 'vnpg';
+            $this->icon               = apply_filters( 'woocommerce_vnpg_icon', '' );
+            $this->has_fields         = false;
+            $this->method_title       = __( 'Vietnam Bank Transfer (VietQR)', 'vnpg' );
+            $this->method_description = __( 'Take payments by scanning QR code with Vietnamese banking App.', 'vnpg' );
 
+            // Load the settings.
+		    $this->init_form_fields();
+		    $this->init_settings();
+
+            // Actions.
+            add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+            //add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'save_account_details' ) );
+            add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+
+		    // Customer Emails.
+		    add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
+	
  		}
 
  		/**
