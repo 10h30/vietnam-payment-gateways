@@ -73,5 +73,33 @@ function vnpg_init_gateway_class() {
         
         }
 
+        /**
+         * Process the payment and return the result.
+         *
+         * @param int $order_id Order ID.
+         * @return array
+         */
+        public function process_payment( $order_id ) {
+    
+            $order = wc_get_order( $order_id );
+    
+            if ( $order->get_total() > 0 ) {
+                // Mark as on-hold (we're awaiting the payment).
+                $order->update_status( apply_filters( 'woocommerce_' .$this->id. '_process_payment_order_status', 'on-hold', $order ), __( 'Awaiting BACS payment', 'woocommerce' ) );
+            } else {
+                $order->payment_complete();
+            }
+    
+            // Remove cart.
+            WC()->cart->empty_cart();
+    
+            // Return thankyou redirect.
+            return array(
+                'result'   => 'success',
+                'redirect' => $this->get_return_url( $order ),
+            );
+    
+        }
+
     }
 }
