@@ -78,10 +78,9 @@ function vnpg_init_gateway_class() {
                     'default'     => __( 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.', 'woocommerce' ),
                     'desc_tip'    => true,
                 ),
-                'template_id' => array(
-                    'title' => __( 'VietQR Template ID', 'vnpg'),
-                    'type' => 'text',
-                    'default' => 'compact'
+                'bank'           => array(
+                    'title'       => __('Bank Name', 'vnpg'),
+                    'type'        => 'text',
                   ),
                 'account_number' => array(
                     'title' => __( 'Account Number', 'vnpg'),
@@ -91,17 +90,19 @@ function vnpg_init_gateway_class() {
                     'title' => __( 'Account Name', 'vnpg'),
                     'type' => 'text'
                   ),
-                  'prefix'           => array(
+                 'prefix'           => array(
                     'title'       => __('Prefix', 'vnpg'),
                     'type'        => 'text',
                     'description' => __('Prefix used to combine with order code to create money transfer content, Set rules: no spaces, no more than 15 characters and no special characters. Violations will be deleted', 'vnpg'),
                     'default'     => $shopname,
                     'desc_tip'    => true,
                   ),
-                  'bank'           => array(
-                    'title'       => __('Bank Name', 'vnpg'),
-                    'type'        => 'text',
+                  'template_id' => array(
+                    'title' => __( 'VietQR Template ID', 'vnpg'),
+                    'type' => 'text',
+                    'default' => 'compact'
                   ),
+                  
             
             );
 	
