@@ -50,8 +50,61 @@ function vnpg_init_gateway_class() {
  		/**
  		* Initialise Gateway Settings Form Fields.
  		*/
- 		public function init_form_fields(){
+        public function init_form_fields(){
 
+            //Tự động sinh prefix đơn hàng cho website.
+            $server_domain = $_SERVER['SERVER_NAME'];
+            $shopname = preg_replace('#^.+://[^/]+#', '', $server_domain);
+            $shopname = str_replace(".","",$shopname);
+
+		    $this->form_fields = array(
+                'enabled'         => array(
+                    'title'   => __( 'Enable/Disable', 'woocommerce' ),
+                    'type'    => 'checkbox',
+                    'label'   => __( 'Enable Vietnam Payment Gateway', 'vnpg' ),
+                    'default' => 'no',
+                ),
+                'title'           => array(
+                    'title'       => __( 'Title', 'woocommerce' ),
+                    'type'        => 'text',
+                    'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
+                    'default'     => __( 'Direct Bank Transfer via Vietcombank (VietQR)', 'vnpg' ),
+                    'desc_tip'    => true,
+                ),
+                'description'     => array(
+                    'title'       => __( 'Description', 'woocommerce' ),
+                    'type'        => 'textarea',
+                    'description' => __( 'Payment method description that the customer will see on your checkout.', 'woocommerce' ),
+                    'default'     => __( 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.', 'woocommerce' ),
+                    'desc_tip'    => true,
+                ),
+                'template_id' => array(
+                    'title' => __( 'VietQR Template ID', 'vnpg'),
+                    'type' => 'text',
+                    'default' => 'compact'
+                  ),
+                'account_number' => array(
+                    'title' => __( 'Account Number', 'vnpg'),
+                    'type' => 'text',
+                  ),
+                 'account_name' => array(
+                    'title' => __( 'Account Name', 'vnpg'),
+                    'type' => 'text'
+                  ),
+                  'prefix'           => array(
+                    'title'       => __('Prefix', 'vnpg'),
+                    'type'        => 'text',
+                    'description' => __('Prefix used to combine with order code to create money transfer content, Set rules: no spaces, no more than 15 characters and no special characters. Violations will be deleted', 'vnpg'),
+                    'default'     => $shopname,
+                    'desc_tip'    => true,
+                  ),
+                  'bank'           => array(
+                    'title'       => __('Bank Name', 'vnpg'),
+                    'type'        => 'text',
+                  ),
+            
+            );
+	
 	 	}
 		 /**
          * Output for the order received page.
