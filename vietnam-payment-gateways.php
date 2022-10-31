@@ -37,6 +37,15 @@ function vnpg_init_gateway_class() {
 		    $this->init_form_fields();
 		    $this->init_settings();
 
+            // Define user set variables.
+            $this->title        = $this->get_option( 'title' );
+            $this->description  = $this->get_option( 'description' );
+            $this->account_name = $this->get_option( 'account_name' );
+            $this->account_number = $this->get_option( 'account_number' );
+            $this->template_id = $this->get_option( 'template_id' );
+            $this->prefix = $this->get_option('prefix');
+            $this->bank = $this->get_option('bank');
+            
             // Actions.
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
             //add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'save_account_details' ) );
