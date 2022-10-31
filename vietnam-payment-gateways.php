@@ -34,6 +34,9 @@ function vnpg_init_gateway_class() {
             $this->method_title       = __( 'Vietnam Bank Transfer (VietQR)', 'vnpg' );
             $this->method_description = __( 'Take payments by scanning QR code with Vietnamese banking App.', 'vnpg' );
 
+            //Get bank list from VietQR API
+            $this->bank_list = $this->get_vietqr_bank_list();
+
             // Load the settings.
 		    $this->init_form_fields();
 		    $this->init_settings();
@@ -67,6 +70,12 @@ function vnpg_init_gateway_class() {
             $shopname = preg_replace('#^.+://[^/]+#', '', $server_domain);
             $shopname = str_replace(".","",$shopname);
 
+            //Tạo danh sách tên ngân hàng cho select form
+            $bank_name = [];
+            foreach ($this->bank_list['data'] as $bank) {
+                $bank_name[$bank['short_name']] = $bank['short_name'];
+            }
+
 		    $this->form_fields = array(
                 'enabled'         => array(
                     'title'   => __( 'Enable/Disable', 'woocommerce' ),
@@ -91,6 +100,7 @@ function vnpg_init_gateway_class() {
                 'bank'           => array(
                     'title'       => __('Bank Name', 'vnpg'),
                     'type'        => 'text',
+                    'options'     => $bank_name,
                   ),
                 'account_number' => array(
                     'title' => __( 'Account Number', 'vnpg'),
@@ -215,6 +225,26 @@ function vnpg_init_gateway_class() {
                 "pay_url" => $pay_url,
             );
 	    }
+
+        public function get_vietqr_bank_list() {
+
+            $body = get_transient( 'vietqr_banklist' );
+            
+            if ( false === $body ) {
+                $url = "https://api.vietqr.io/v2/banks";
+                $response = wp_remote_get($url );
+            
+                if (200 !== wp_remote_retrieve_response_code($response)) {
+                    return;
+                }
+            
+                $body = wp_remote_retrieve_body($response);
+                set_transient( 'vietqr_banklist', $body, DAY_IN_SECONDS );
+            }
+
+            $bank_list = json_decode($body, true);
+            return $bank_list;
+        }
 
     }
 }
