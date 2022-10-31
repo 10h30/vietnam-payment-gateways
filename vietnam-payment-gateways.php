@@ -148,11 +148,11 @@ function vnpg_init_gateway_class() {
             $html  = '<h3>Thông tin thanh toán</h3>';
             $html .= '<div>Bạn vui lòng chuyển khoản theo thông tin dưới đây</div>';
             $html .= '<ul>';
-            $html .= '<li class="order-amount">'. $order->get_total() . '</li>';
-            $html .= '<li class="bank-name">'. $this->bank . '</li>';
-            $html .= '<li class="account-number">'. $this->account_number . '</li>';
-            $html .= '<li class="account-name">'. $this->account_name . '</li>';
-            $html.= '<li class="prefix">'. $this->prefix . $order_id .'</li>';
+            $html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
+            $html .= '<li class="bank-name">Ngân hàng: '. $this->bank . '</li>';
+            $html .= '<li class="account-number">Số tài khoản'. $this->account_number . '</li>';
+            $html .= '<li class="account-name">Chủ tài khoản'. $this->account_name . '</li>';
+            $html.= '<li class="prefix">Nội dung'. $this->prefix . $order_id .'</li>';
             $html .= '</ul>';
 
             echo $html;
