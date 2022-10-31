@@ -153,6 +153,8 @@ function vnpg_init_gateway_class() {
             $html .= '<li class="account-name">'. $this->account_name . '</li>';
             $html.= '<li class="prefix">'. $this->prefix . $order_id .'</li>';
             $html .= '</ul>';
+
+            echo $html;
         }
 
         /**
