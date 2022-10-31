@@ -139,7 +139,7 @@ function vnpg_init_gateway_class() {
             }
         }
 
-        private function payment_details($order_id = '') {
+        private function payment_details($order_id) {
 
             // Get order and store in $order.
 		    $order = wc_get_order($order_id);
