@@ -99,7 +99,7 @@ function vnpg_init_gateway_class() {
                 ),
                 'bank'           => array(
                     'title'       => __('Bank Name', 'vnpg'),
-                    'type'        => 'text',
+                    'type'        => 'select',
                     'options'     => $bank_name,
                   ),
                 'account_number' => array(
