@@ -160,18 +160,56 @@ function vnpg_init_gateway_class() {
 			$qrcode_image_url  = $data['img_url'];
 			$qrcode_page_url = $data['pay_url'];
 
-            $html  = '<h3>Thông tin thanh toán</h3>';
-            $html .= '<div>Bạn vui lòng chuyển khoản theo thông tin dưới đây</div>';
-            $html .= ' <div id="qrcode" style="display: flex;justify-content: center;">
+            $html  = '<section class="vnpg-payment">';
+
+            if ($qrcode_image_url) {
+                $html .= '<h3>Mã QR chuyển khoản ngân hàng</h3>';
+                $html .= '<div id="qrcode" style="display: flex;justify-content: center;">
                         <img src="' . esc_html($qrcode_image_url) . '"  alt="VietQR QR Image" width="400px" />
-                        </div>';
+                      </div>';
+            }
+
+            $html .= '<h3>Thông tin chuyển khoản ngân hàng</h3>';
+            $html .= '<p>Vui lòng chuyển đúng nội dung <strong>' .  $this->prefix . $order_id   .'</strong> để chúng tôi xác nhận đơn hàng nhanh chóng hơn.</h3>';
             $html .= '<ul>';
             $html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
             $html .= '<li class="bank-name">Ngân hàng: '. $this->bank . '</li>';
             $html .= '<li class="account-number">Số tài khoản: '. $this->account_number . '</li>';
             $html .= '<li class="account-name">Chủ tài khoản: '. $this->account_name . '</li>';
-            $html.= '<li class="prefix">Nội dung: '. $this->prefix . $order_id .'</li>';
+            $html .= '<li class="prefix">Nội dung: '. $this->prefix . $order->get_order_number() .'</li>';
             $html .= '</ul>';
+
+            $html .= ''
+            $html .= '</section>';
+
+            $html .= '<!-- STYLE CSS-->
+                        <style>
+                            .vnpg-payment {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                margin: 40px auto;
+                            }
+                            #qrcode {
+                                background: #FFF;
+                                position: relative;
+                                margin-top: 20px;
+                            }
+                            
+                            #qrcode:before {
+                                content: "";
+                                position: absolute;
+                                top: 0; right: 0; bottom: 0; left: 0;
+                                z-index: -1;
+                                margin: -15px;
+                                border-radius: inherit;
+                                background: linear-gradient(to right, #21447B, #A2CA46);
+                                border-radius: 15px;
+                            }
+                            #qrcode img {
+                                padding: 30px 0;
+                            }
+                            </style>';
 
             echo $html;
         }
