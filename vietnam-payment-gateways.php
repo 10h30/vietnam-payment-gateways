@@ -123,7 +123,7 @@ function vnpg_init_gateway_class() {
          * @param int $order_id Order ID.
          */
         public function thankyou_page( $order_id ) {
-            $this->payment_details( $order_id );
+            //$this->payment_details( $order_id );
         }
         
         /**
@@ -135,7 +135,7 @@ function vnpg_init_gateway_class() {
          */
         public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
             if (!$sent_to_admin && 'vnpg' === $order->get_paffyment_method() && $order->has_status('on-hold')) {
-                $this->payment_details($order->get_id());
+                //$this->payment_details($order->get_id());
             }
         }
 
@@ -145,14 +145,14 @@ function vnpg_init_gateway_class() {
 		    $order = wc_get_order($order_id);
 
             $html  = '<h3>Thông tin thanh toán</h3>';
-            $html .= '<div>Bạn vui lòng chuyển khoản theo thông tin dưới đây</div>';
-            $html .= '<ul>';
-            $html .= '<li class="order-amount">'. $order->get_total() . '</li>';
-            $html .= '<li class="bank-name">'. $this->bank . '</li>';
-            $html .= '<li class="account-number">'. $this->account_number . '</li>';
-            $html .= '<li class="account-name">'. $this->account_name . '</li>';
-            $html.= '<li class="prefix">'. $this->prefix . $order_id .'</li>';
-            $html .= '</ul>';
+            //$html .= '<div>Bạn vui lòng chuyển khoản theo thông tin dưới đây</div>';
+            //$html .= '<ul>';
+            //$html .= '<li class="order-amount">'. $order->get_total() . '</li>';
+            //$html .= '<li class="bank-name">'. $this->bank . '</li>';
+            //$html .= '<li class="account-number">'. $this->account_number . '</li>';
+            //$html .= '<li class="account-name">'. $this->account_name . '</li>';
+            //$html.= '<li class="prefix">'. $this->prefix . $order_id .'</li>';
+            //$html .= '</ul>';
 
             echo $html;
         }
