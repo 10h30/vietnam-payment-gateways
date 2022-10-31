@@ -145,8 +145,16 @@ function vnpg_init_gateway_class() {
             // Get order and store in $order.
 		    $order = wc_get_order($order_id);
 
+            // Get VietQR Image URL and Pay URL
+            $data = $this->get_vietqr_img_url($order_id);
+			$qrcode_image_url  = $data['img_url'];
+			$qrcode_page_url = $data['pay_url'];
+
             $html  = '<h3>Thông tin thanh toán</h3>';
             $html .= '<div>Bạn vui lòng chuyển khoản theo thông tin dưới đây</div>';
+            $html .= ' <div id="qrcode" style="display: flex;justify-content: center;">
+                        <img src="' . esc_html($qrcode_image_url) . '"  alt="VietQR QR Image" width="400px" />
+                        </div>';
             $html .= '<ul>';
             $html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
             $html .= '<li class="bank-name">Ngân hàng: '. $this->bank . '</li>';
@@ -185,6 +193,28 @@ function vnpg_init_gateway_class() {
             );
     
         }
+
+        public function get_vietqr_img_url($order_id) {
+
+            // Get order and store in $order.
+		    $order = wc_get_order($order_id);
+
+            $accountNo = $this->account_number;
+            $accountName = $this->account_name;
+            $bank = $this->bank;
+            $amount = $order->get_total();
+            $info = $account_fields['memo']['2value'];
+            
+            $template = $this->template_id;
+
+            $img_url = "https://img.vietqr.io/image/{$bank}-{$accountNo}-{$template}.jpg?amount={$amount}&addInfo={$info}&accountName={$accountName}";
+            $pay_url = "https://api.vietqr.io/{$bank}/{$accountNo}/{$amount}/{$info}";
+
+            return array(
+                "img_url" => $img_url,
+                "pay_url" => $pay_url,
+            );
+	    }
 
     }
 }
