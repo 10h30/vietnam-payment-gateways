@@ -203,7 +203,7 @@ function vnpg_init_gateway_class() {
             $accountName = $this->account_name;
             $bank = $this->bank;
             $amount = $order->get_total();
-            $info = $account_fields['memo']['2value'];
+            $info = $this->prefix . $order_id;
             
             $template = $this->template_id;
 
