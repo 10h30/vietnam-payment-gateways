@@ -169,7 +169,7 @@ function vnpg_init_gateway_class() {
     
             if ( $order->get_total() > 0 ) {
                 // Mark as on-hold (we're awaiting the payment).
-                $order->update_status( apply_filters( 'woocommerce_' .$this->id. '_process_payment_order_status', 'on-hold', $order ), __( 'Awaiting BACS payment', 'woocommerce' ) );
+                $order->update_status( apply_filters( 'woocommerce_vnpg_process_payment_order_status', 'on-hold', $order ), __( 'Awaiting BACS payment', 'woocommerce' ) );
             } else {
                 $order->payment_complete();
             }
