@@ -7,7 +7,7 @@
  * Author URI: https://thuanbui.me
  * Text Domain: vnpg
  * Domain Path: /languages
- * Version: 2.1.1
+ * Version: 1.0.0
  * Tested up to: 6.0
  * License: GNU General Public License v3.0
  */
@@ -179,7 +179,7 @@ function vnpg_init_gateway_class() {
             $html .= '<li class="prefix">Nội dung: '. $this->prefix . $order->get_order_number() .'</li>';
             $html .= '</ul>';
 
-            $html .= ''
+            $html .= '';
             $html .= '</section>';
 
             $html .= '<!-- STYLE CSS-->
