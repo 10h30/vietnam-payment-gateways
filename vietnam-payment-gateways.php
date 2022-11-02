@@ -160,27 +160,36 @@ function vnpg_init_gateway_class() {
 			$qrcode_image_url  = $data['img_url'];
 			$qrcode_page_url = $data['pay_url'];
 
-            $html  = '<section class="vnpg-payment">';
-
+            $html  = '';        
+            $html .= '<section class="vnpg-payment">';
+            $html .= '<h3>Chuyển khoản ngân hàng</h3>';
+            $html .= '<div class="vnpg-payment-detail">
+                        <div class="vnpg-qr-code"><p>Bạn cần sử dụng một App ngân hàng bất kỳ để chuyển khoản theo nội dung bên dưới. Vui lòng nhập đúng nội dung  <strong>' .  $this->prefix . $order_id   .'</strong> để đơn hàng được xử lý nhanh nhất.</h3>';
+            
             if ($qrcode_image_url) {
-                $html .= '<h3>Mã QR chuyển khoản ngân hàng</h3>';
-                $html .= '<div id="qrcode" style="display: flex;justify-content: center;">
+                $html .= '<div id="qrcode">
                         <img src="' . esc_html($qrcode_image_url) . '"  alt="VietQR QR Image" width="400px" />
                       </div>';
             }
+            $html .= '<div class="bank-name"><span>Ngân hàng:</span><span> '. $this->bank . '</span></div>';
+            $html .= '</div>';
+            //$html .= '<ul>';
+            //$html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
+            //$html .= '<li class="bank-name">Ngân hàng: '. $this->bank . '</li>';
+            //$html .= '<li class="account-number">Số tài khoản: '. $this->account_number . '</li>';
+            //$html .= '<li class="account-name">Chủ tài khoản: '. $this->account_name . '</li>';
+            //$html .= '<li class="prefix">Nội dung: '. $this->prefix . $order->get_order_number() .'</li>';
+            //$html .= '</ul>';
 
-            $html .= '<h3>Thông tin chuyển khoản ngân hàng</h3>';
-            $html .= '<p>Vui lòng chuyển đúng nội dung <strong>' .  $this->prefix . $order_id   .'</strong> để chúng tôi xác nhận đơn hàng nhanh chóng hơn.</h3>';
-            $html .= '<ul>';
-            $html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
-            $html .= '<li class="bank-name">Ngân hàng: '. $this->bank . '</li>';
-            $html .= '<li class="account-number">Số tài khoản: '. $this->account_number . '</li>';
-            $html .= '<li class="account-name">Chủ tài khoản: '. $this->account_name . '</li>';
-            $html .= '<li class="prefix">Nội dung: '. $this->prefix . $order->get_order_number() .'</li>';
-            $html .= '</ul>';
+            //$html .= '<div class="bank-info">';
+            $html .= '<div class="order-amount"><span>Số tiền:</span><span> '. $order->get_total() . '</span></div>';
+            $html .= '<div class="account-number"><span>Số tài khoản:</span><span> '. $this->account_number . '</span></div>';
+            $html .= '<div class="account-name"><span>Chủ tài khoản:</span><span> '. $this->account_name . '</span></div>';
+            $html .= '<div class="prefix"><span>Nội dung:</span> <span>'. $this->prefix . $order->get_order_number() .'</span></div>';
 
-            $html .= '';
-            $html .= '</section>';
+            //$html .= '</div>';
+
+            $html .= '</div></section>';
 
             $html .= '<!-- STYLE CSS-->
                         <style>
@@ -189,11 +198,30 @@ function vnpg_init_gateway_class() {
                                 flex-direction: column;
                                 align-items: center;
                                 margin: 40px auto;
+                                max-width: 800px;
                             }
+
+                            .vnpg-payment-detail {
+                                border: 1px solid #DDD;
+                                margin-top: 20px;
+                            }
+
+                            .vnpg-payment-detail > div {
+                                padding: 20px;
+                                border-bottom: 1px solid #DDD;
+                            }
+
+                            .vnpg-payment-detail > div:last-of-type {       
+                                border-bottom: 0;
+                            }
+                            
                             #qrcode {
                                 background: #FFF;
                                 position: relative;
-                                margin-top: 20px;
+                                display: flex;
+                                justify-content: center;
+                                max-width: 400px;
+                                margin: 40px auto;
                             }
                             
                             #qrcode:before {
@@ -201,13 +229,24 @@ function vnpg_init_gateway_class() {
                                 position: absolute;
                                 top: 0; right: 0; bottom: 0; left: 0;
                                 z-index: -1;
-                                margin: -15px;
+                                margin: -10px;
                                 border-radius: inherit;
                                 background: linear-gradient(to right, #21447B, #A2CA46);
                                 border-radius: 15px;
                             }
                             #qrcode img {
-                                padding: 30px 0;
+                                padding: 10px 0;
+                            }
+                            .bank-info {
+                                width: 100%;
+                            }
+                            .bank-info div {
+                                border-bottom: 1px solid #EEE;
+                                padding: 5px 0;
+                            }
+                            
+                            .bank-info span:nth-child(2) {
+                                font-weight: bold;
                             }
                             </style>';
 
@@ -255,8 +294,19 @@ function vnpg_init_gateway_class() {
             
             $template = $this->template_id;
 
-            $img_url = "https://img.vietqr.io/image/{$bank}-{$accountNo}-{$template}.jpg?amount={$amount}&addInfo={$info}&accountName={$accountName}";
-            $pay_url = "https://api.vietqr.io/{$bank}/{$accountNo}/{$amount}/{$info}";
+            $img_url = get_transient( 'vietqr_img_url_'.$order_id );
+            $pay_url = get_transient( 'vietqr_pay_url_'.$order_id );
+
+            if ( false === $img_url ) {
+                $img_url = "https://img.vietqr.io/image/{$bank}-{$accountNo}-{$template}.jpg?amount={$amount}&addInfo={$info}&accountName={$accountName}";
+            }
+
+            if ( false === $pay_url ) {
+                $pay_url = "https://api.vietqr.io/{$bank}/{$accountNo}/{$amount}/{$info}";
+            }
+
+            set_transient( 'vietqr_img_url_'.$order_id, $img_url, DAY_IN_SECONDS );
+            set_transient( 'vietqr_pay_url_'.$order_id, $pay_url, DAY_IN_SECONDS );
 
             return array(
                 "img_url" => $img_url,
