@@ -160,6 +160,11 @@ function vnpg_init_gateway_class() {
 			$qrcode_image_url  = $data['img_url'];
 			$qrcode_page_url = $data['pay_url'];
 
+            $bank_shortname = $this->bank;
+            $bank_data = $this->search_bank_info($bank_shortname);
+            $bank_name = $bank_data['name'];
+            $bank_logo  = $bank_data['logo'];
+
             $html  = '';        
             $html .= '<section class="vnpg-payment">';
             $html .= '<h3>Chuyển khoản ngân hàng</h3>';
@@ -171,7 +176,7 @@ function vnpg_init_gateway_class() {
                         <img src="' . esc_html($qrcode_image_url) . '"  alt="VietQR QR Image" width="400px" />
                       </div>';
             }
-            $html .= '<div class="bank-name"><span>Ngân hàng:</span><span> '. $this->bank . '</span></div>';
+            $html .= '<div class="bank-name"><img src="'. esc_html($bank_logo).'" alt="'. $bank_name .'" width="100px" /><span>Ngân hàng </span><strong> '. $bank_name . '</strong></div>';
             $html .= '</div>';
             //$html .= '<ul>';
             //$html .= '<li class="order-amount">Số tiền: '. $order->get_total() . '</li>';
@@ -182,10 +187,10 @@ function vnpg_init_gateway_class() {
             //$html .= '</ul>';
 
             //$html .= '<div class="bank-info">';
-            $html .= '<div class="order-amount"><span>Số tiền:</span><span> '. $order->get_total() . '</span></div>';
-            $html .= '<div class="account-number"><span>Số tài khoản:</span><span> '. $this->account_number . '</span></div>';
-            $html .= '<div class="account-name"><span>Chủ tài khoản:</span><span> '. $this->account_name . '</span></div>';
-            $html .= '<div class="prefix"><span>Nội dung:</span> <span>'. $this->prefix . $order->get_order_number() .'</span></div>';
+            $html .= '<div class="bank-info order-amount"><span>Số tiền:</span><strong> '. $order->get_total() . '</strong></div>';
+            $html .= '<div class="bank-info account-number"><span>Số tài khoản:</span><strong> '. $this->account_number . '</strong></div>';
+            $html .= '<div class="bank-info account-name"><span>Tên tài khoản:</span><strong> '. $this->account_name . '</strong></div>';
+            $html .= '<div class="bank-info prefix"><span>Nội dung chuyển khoản:</span> <strong>'. $this->prefix . $order->get_order_number() .'</strong></div>';
 
             //$html .= '</div>';
 
@@ -221,7 +226,7 @@ function vnpg_init_gateway_class() {
                                 display: flex;
                                 justify-content: center;
                                 max-width: 400px;
-                                margin: 40px auto;
+                                margin: 0 auto 40px;
                             }
                             
                             #qrcode:before {
@@ -237,17 +242,30 @@ function vnpg_init_gateway_class() {
                             #qrcode img {
                                 padding: 10px 0;
                             }
-                            .bank-info {
+                            /*.bank-info {
                                 width: 100%;
                             }
                             .bank-info div {
                                 border-bottom: 1px solid #EEE;
                                 padding: 5px 0;
-                            }
+                            }*/
                             
                             .bank-info span:nth-child(2) {
                                 font-weight: bold;
                             }
+                            .bank-name  {
+                                display: grid; 
+                                grid-template-columns: minmax(50px, 100px) 1fr; 
+                                grid-template-rows: 1fr 1fr; 
+                                gap: 0px 0px; 
+                                grid-template-areas: 
+                                  "logo ."
+                                  "logo ."; 
+                              }
+                              .bank-name img { 
+                                  grid-area: logo; 
+                                  align-self: center;
+                              }
                             </style>';
 
             echo $html;
@@ -333,6 +351,19 @@ function vnpg_init_gateway_class() {
             $bank_list = json_decode($body, true);
             return $bank_list;
         }
+
+        public function search_bank_info($bank) {
+            foreach ($this->bank_list['data'] as $bank_data) {
+                if ($bank_data['short_name'] === $bank) {
+                    return array(
+                        "name" => $bank_data['name'],
+                        "logo" => $bank_data['logo'],
+                    );
+                }
+            }
+
+            return null;
+         }
 
     }
 }
